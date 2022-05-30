@@ -23,12 +23,13 @@ from os import getcwd
 from os.path import join
 
 dirs = ['train', 'val']
-classes = ['person', 'car']
+classes = ['without_mask', 'with_mask']
 
 
 def getImagesInDir(dir_path):
     image_list = []
-    for filename in glob.glob(dir_path + '/*.jpg'):
+    for filename in glob.glob(dir_path + '\*.png'):
+        # print("filename=", filename)
         image_list.append(filename)
 
     return image_list
@@ -73,15 +74,17 @@ def convert_annotation(dir_path, output_path, image_path):
 
 
 cwd = getcwd()
-
+print("cwd=", cwd)
 for dir_path in dirs:
-    full_dir_path = cwd + '/' + dir_path
+    full_dir_path = cwd + '\\' + dir_path
+    print("full_dir_path=", full_dir_path)
     output_path = full_dir_path + '/yolo/'
 
     if not os.path.exists(output_path):
         os.makedirs(output_path)
 
     image_paths = getImagesInDir(full_dir_path)
+    # print("image_paths=", image_paths)
     list_file = open(full_dir_path + '.txt', 'w')
 
     for image_path in image_paths:
