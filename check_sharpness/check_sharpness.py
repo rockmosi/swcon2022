@@ -21,8 +21,10 @@ spec.loader.exec_module(fm)
 size = [640, 480]
 dir_path = os.path.dirname(os.path.realpath(__file__))
 img_path = dir_path + '/data2/'
-img_path = "D:/data/mask_face/220530_tarin_data4yolo_after_sharp/train/images/"
-label_path = "D:/data/mask_face/220530_tarin_data4yolo_after_sharp/train/labels/"
+# img_path = "D:/data/mask_face/220530_tarin_data4yolo_after_sharp/train/images/"
+# label_path = "D:/data/mask_face/220530_tarin_data4yolo_after_sharp/train/labels/"
+img_path = "./images/"
+label_path = "./labels/"
 # print(dir_path)
 # print(img_path)
 
