@@ -146,6 +146,7 @@ if __name__ == '__main__':
     label_list = list()
     img_list = list()
     txt_list = list()
+    result_change = list()
     fm.search(img_path, file_list)
     fm.search(label_path, label_list)
     # must do it
@@ -163,8 +164,8 @@ if __name__ == '__main__':
         if tmp == 'txt':
             txt_list.append(ll)
     # print(file_list)
-    print(img_list)
-    print(txt_list)
+    # print(img_list)
+    # print(txt_list)
 
     # test sharpness measure function
     for img_tmp, txt_tmp in zip(img_list, txt_list):
@@ -174,29 +175,32 @@ if __name__ == '__main__':
         dw = img.shape[1]
         dh = img.shape[0]
         crop_imgs, num_labels= box_position_yolo(txt_tmp, dw, dh)
-        # print("crop_imgs, num_labels=", len(crop_imgs), num_labels)
-        # print("img_tmp)", img_tmp)
+        print("crop_imgs, num_labels=", len(crop_imgs), num_labels)
+        print("img_tmp, txt_tmp=", img_tmp, txt_tmp)
 
         under_threshold_index = list()
-        for i in range(num_labels):
-            cv2.imshow('label_image', crop_imgs[i])
+        if len(crop_imgs) is not 0:
+            for i in range(num_labels):
+                cv2.imshow('label_image', crop_imgs[i])
 
-            LAMP = modifiedLaplacian(crop_imgs[i])
-            LAPV = varianceOfLaplacian(crop_imgs[i])
-            TENG = tenengrad(crop_imgs[i])
-            GLVN = normalizedGraylevelVariance(crop_imgs[i])
-            width, height, channel = crop_imgs[i].shape
+                LAMP = modifiedLaplacian(crop_imgs[i])
+                LAPV = varianceOfLaplacian(crop_imgs[i])
+                TENG = tenengrad(crop_imgs[i])
+                GLVN = normalizedGraylevelVariance(crop_imgs[i])
+                width, height, channel = crop_imgs[i].shape
 
-            result = f"width, height, channel= {width} {height} {channel} " \
-                     f"LAMP, LAPV, TENG, GLVN= {round(LAMP, 3):<9} {round(LAPV, 3):<9} {round(TENG, 3):<9} {round(GLVN, 3):<9}"
-            print(result, "i=", i)
-            if GLVN < 19:
-                under_threshold_index.append(i)
+                result = f"width, height, channel= {width} {height} {channel} " \
+                         f"LAMP, LAPV, TENG, GLVN= {round(LAMP, 3):<9} {round(LAPV, 3):<9} {round(TENG, 3):<9} {round(GLVN, 3):<9}"
+                print(result, "i=", i)
+                if GLVN < 19:
+                    under_threshold_index.append(i)
 
-            cv2.waitKey(0)
-        new_filename = txt_tmp[9:]
-        print(new_filename)
-        print("under_threshold_index=", under_threshold_index)
-
-        remove_under_threshold_line(new_filename, under_threshold_index)
+                # cv2.waitKey(0)
+            new_filename = txt_tmp[9:]
+            print(new_filename)
+            print("under_threshold_index=", under_threshold_index)
+            result_change.append(new_filename)
+            result_change.append(under_threshold_index)
+            remove_under_threshold_line(new_filename, under_threshold_index)
+    print(result_change)
     cv2.destroyAllWindows()
