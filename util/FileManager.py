@@ -23,6 +23,7 @@ def search(ori_position, store_list):
 
     return filenames
 
+
 def change_name(dir_path:str, change_name:str, start_num:int, image_type='jpg', label_type='txt'):
     """
     change both image file and label txt file
