@@ -6,6 +6,8 @@ Pertuz 2012: Analysis of focus measure operators for shape-from-focus
 code transformed from C++.openCV -> python.cv2
 RETURN: focusMeasure - parameter describing sharpness of an image
 '''
+
+
 from __future__ import division
 
 import cv2
@@ -129,6 +131,7 @@ def box_position_yolo(file_txt, dw, dh):
             h = line[4]
             # _, x, y, w, h = map(float, line.split(' '))
             print(label, x, y, w, h)
+            
             # Taken from https://github.com/pjreddie/darknet/blob/810d7f797bdb2f021dbe65d2524c2ff6b8ab5c8b/src/image.c#L283-L291
             # via https://stackoverflow.com/questions/44544471/how-to-get-the-coordinates-of-the-bounding-box-in-yolo-object-detection#comment102178409_44592380
             l = int((x - w / 2) * dw)
