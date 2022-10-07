@@ -9,11 +9,41 @@ RETURN: focusMeasure - parameter describing sharpness of an image
 from __future__ import division
 
 import cv2
+import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 import os
 import sys
 import importlib.util
 from sklearn.preprocessing import KBinsDiscretizer
+input_file = "glvn.csv"
+f = open(input_file)
+# f.readline()  # skip the header
+data = np.loadtxt(f)
+# data = np.reshape(data, (1, 1))
+print(data)
+# 2d
+data = np.reshape(data, (1, -1))
+print(data)
+# seperate all data
+data = np.reshape(data, (-1, 1))
+print(data)
+print(type(data), data.shape)
+# encode: {'onehot', 'onehot-dense', 'ordinal'},
+# strategy - 'uniform', 'quantile', 'kmeans'
+est = KBinsDiscretizer(n_bins=2, encode='onehot-dense', strategy='kmeans')
+est.fit(data)
+Xt = est.transform(data)
+print(Xt)
+print(est.bin_edges_)
+print(est.n_bins_)
+density, bins, _ = plt.hist(data, bins=est.bin_edges_[0])
+print("density, bins, _ =", density, bins, _ )
+# plt.xticks([0,19,89.682])
+# plt.xticks(est.bin_edges_[0])
+# plt.xticks(est.bin_edges_[0])
+# plt.rcParams['figure.figsize']=(5.5,6)
+# plt.show()
 
 # file search module
 spec = importlib.util.spec_from_file_location("FileManager", "C:/python/swcon2022/util/FileManager.py")
@@ -202,10 +232,10 @@ if __name__ == '__main__':
                          f"LAMP, LAPV, TENG, GLVN= {round(LAMP, 3):<9} {round(LAPV, 3):<9} {round(TENG, 3):<9} {round(GLVN, 3):<9}"
                 n = text_file.write(result + "\n")
                 print(result, "i=", i)
-                if GLVN < 19:
+                if GLVN < 29.4:
                     under_threshold_index.append(i)
 
-                # cv2.waitKey(0)
+                cv2.waitKey(0)
             # new_filename = txt_tmp[9:]
             new_filename = txt_tmp
             print(new_filename)
@@ -216,3 +246,4 @@ if __name__ == '__main__':
     print(result_change)
     cv2.destroyAllWindows()
 text_file.close()
+
