@@ -16,6 +16,10 @@ import os
 import sys
 import importlib.util
 from sklearn.preprocessing import KBinsDiscretizer
+sys.path.append("C:/python/swcon2022/check_sharpness/mdlp/")
+print(sys.path)
+
+
 input_file = "glvn.csv"
 f = open(input_file)
 # f.readline()  # skip the header
@@ -37,14 +41,20 @@ Xt = est.transform(data)
 print(Xt)
 print(est.bin_edges_)
 print(est.n_bins_)
-density, bins, _ = plt.hist(data, bins=est.bin_edges_[0])
+
+cutP= [ 0.553     , 29.40088003, 89.682     ]
+cutP= [ 0.553     , 19.40088003, 89.682     ]
+density, bins, _ = plt.hist(data)
+# density, bins, _ = plt.hist(data, bins=cutP)
+# density, bins, _ = plt.hist(data, bins=est.bin_edges_[0])
 print("density, bins, _ =", density, bins, _ )
 # plt.xticks([0,19,89.682])
 # plt.xticks(est.bin_edges_[0])
 # plt.xticks(est.bin_edges_[0])
 # plt.rcParams['figure.figsize']=(5.5,6)
-# plt.show()
+plt.show()
 
+"""
 # file search module
 spec = importlib.util.spec_from_file_location("FileManager", "C:/python/swcon2022/util/FileManager.py")
 fm = importlib.util.module_from_spec(spec)
@@ -247,3 +257,4 @@ if __name__ == '__main__':
     cv2.destroyAllWindows()
 text_file.close()
 
+"""
