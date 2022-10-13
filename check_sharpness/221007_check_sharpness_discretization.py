@@ -6,7 +6,7 @@ Pertuz 2012: Analysis of focus measure operators for shape-from-focus
 code transformed from C++.openCV -> python.cv2
 RETURN: focusMeasure - parameter describing sharpness of an image
 '''
-from __future__ import division
+# from __future__ import division
 
 import cv2
 import matplotlib.pyplot as plt
@@ -16,8 +16,9 @@ import os
 import sys
 import importlib.util
 from sklearn.preprocessing import KBinsDiscretizer
-sys.path.append("C:/python/swcon2022/check_sharpness/mdlp/")
-print(sys.path)
+# mdlp is supervised method
+# sys.path.append("C:/python/swcon2022/check_sharpness/mdlp/")
+# print(sys.path)
 
 
 input_file = "glvn.csv"
@@ -99,7 +100,7 @@ def tenengrad(img, ksize=3):
     Gx = cv2.Sobel(img, ddepth=cv2.CV_64F, dx=1, dy=0, ksize=ksize)
     Gy = cv2.Sobel(img, ddepth=cv2.CV_64F, dx=0, dy=1, ksize=ksize)
     FM = Gx * Gx + Gy * Gy
-    mn = cv2.mean(FM)[0]
+    mn = cv2.mean(FM)[0]어부횟집
     if np.isnan(mn):
         return np.nanmean(FM)
     return mn
