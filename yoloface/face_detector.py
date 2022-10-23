@@ -13,8 +13,9 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname("__file__"), '..'))
 from models.common import Conv
 from models.yolo import Model
 from utils.datasets import letterbox
-from utils.general import check_img_size, non_max_suppression_face, \
+from utils.general2 import check_img_size, non_max_suppression_face, \
     scale_coords,scale_coords_landmarks,filter_boxes
+from utils.plots import Annotator, colors, save_one_box
 
 class YoloDetector:
     def __init__(self, weights_name='yolov5n_state_dict.pt',config_name='yolov5n.yaml', gpu = 0, min_face=100, target_size=None, frontal=False):
@@ -33,9 +34,10 @@ class YoloDetector:
             self.target_size = target_size
             self.min_face = min_face
             self.frontal = frontal
+            self.names = list()
             if self.frontal:
                 self.anti_profile = joblib.load(os.path.join(self._class_path, 'models/anti_profile/anti_profile_xgb_new.pkl'))
-            self.detector = self.init_detector(weights_name,config_name)
+            self.detector = self.init_detector(weights_name, config_name)
 
     def init_detector(self,weights_name,config_name):
         print(self.gpu)
@@ -50,8 +52,15 @@ class YoloDetector:
         config_path = os.path.join(self._class_path,'models/',config_name)
         state_dict = torch.load(model_path)
         detector = Model(cfg=config_path)
+        print("detector.names=", detector.names)
+        # get name
+        self.names = detector.names
+
+        # print("model detector=", detector)
         detector.load_state_dict(state_dict)
         detector = detector.to(self.device).float().eval()
+        # print("model detector=", detector)
+
         for m in detector.modules():
             if type(m) in [nn.Hardswish, nn.LeakyReLU, nn.ReLU, nn.ReLU6, nn.SiLU]:
                 m.inplace = True  # pytorch 1.7.0 compatibility
@@ -92,7 +101,7 @@ class YoloDetector:
         landmarks = [[] for i in range(len(origimgs))]
         
         pred = non_max_suppression_face(pred, conf_thres, iou_thres)
-        
+        print("pred=", pred)
         for i in range(len(origimgs)):
             img_shape = origimgs[i].shape
             h,w = img_shape[:2]
@@ -101,8 +110,38 @@ class YoloDetector:
             det = pred[i].cpu()
             scaled_bboxes = scale_coords(imgs[i].shape[1:], det[:, :4], img_shape).round()
             scaled_cords = scale_coords_landmarks(imgs[i].shape[1:], det[:, 5:15], img_shape).round()
+            print("scaled_bboxes=", scaled_bboxes)
+            print("det=", det)
+            # device = select_device(self.device)
+            # im = torch.from_numpy(im).to(device)
+            # s += f'{i}: '
+            # s += '%gx%g ' % im.shape[2:]  # print string
+            s = str()
+            hide_labels = False
+            hide_conf = False
+            line_thickness = 3
+            # colors = Colors()  # create instance for 'from utils.plots import colors'
+            # annotator = Annotator(im0, line_width=line_thickness, example=str(names))
+            annotator = Annotator(imgs, line_width=line_thickness, example=str(self.names))
+            # annotator = Annotator(origimgs, line_width=line_thickness, example=str(self.names))
 
             for j in range(det.size()[0]):
+                # Print results
+                # for c in det[:, -1].unique():
+                #     n = (det[:, -1] == c).sum()  # detections per class
+                #     # s += f"{n} {self.names[int(c)]}{'s' * (n > 1)}, "  # add to string
+                #     s += f"{n} {self.names[int(c)]}{'s' * (n > 1)}, "
+                #
+                # # Write results
+                # for *xyxy, conf, cls in reversed(det):
+                #     if True:  # Add bbox to image
+                #         c = int(cls)  # integer class
+                #         label = None if hide_labels else (self.names[c] if hide_conf else f'{self.names[c]} {conf:.2f}')
+                #         annotator.box_label(xyxy, label, color=colors(c, True))
+                    # if save_crop:
+                    #     save_one_box(xyxy, imc, file=save_dir / 'crops' / self.names[c] / f'{p.stem}.jpg', BGR=True)
+
+                # print("string-", s)
                 box = (det[j, :4].view(1, 4) / gn).view(-1).tolist()
                 box = list(map(int,[box[0]*w,box[1]*h,box[2]*w,box[3]*h]))
                 if box[3] - box[1] < self.min_face:
@@ -110,6 +149,7 @@ class YoloDetector:
                 lm = (det[j, 5:15].view(1, 10) / gn_lks).view(-1).tolist()
                 lm = list(map(int,[i*w if j%2==0 else i*h for j,i in enumerate(lm)]))
                 lm = [lm[i:i+2] for i in range(0,len(lm),2)]
+                print("lm=", lm)
                 bboxes[i].append(box)
                 landmarks[i].append(lm)
         return bboxes, landmarks

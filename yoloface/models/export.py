@@ -16,7 +16,7 @@ import torch.nn as nn
 from yoloface.models.experimental import attempt_load
 from yoloface.models.common import Conv
 from yoloface.utils.activations import Hardswish, SiLU
-from yoloface.utils.general import set_logging, check_img_size
+from yoloface.utils.general2 import set_logging, check_img_size
 import onnx
 
 if __name__ == '__main__':
