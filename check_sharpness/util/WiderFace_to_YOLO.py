@@ -23,7 +23,8 @@ def main():
 
             img = cv2.imread(img_path)
 
-            num_obj = lines[lines.index(i) + 1].split("/n")[0]
+            # num_obj = lines[lines.index(i) + 1].split("/n")[0]
+            num_obj = lines[lines.index(i) + 1].split("\n")[0]
             face_cout += int(num_obj)
 
             bbox_line_start = lines.index(i) + 2
@@ -32,7 +33,8 @@ def main():
             # Init relative bbox
             rel_bbox_list = []
             for j in range(bbox_line_start, bbox_line_end):
-                bbox_list = lines[j].split("/n")[0]
+                # bbox_list = lines[j].split("/n")[0]
+                bbox_list = lines[j].split("\n")[0]
                 bbox_split = bbox_list.split(" ")
 
                 # Absolute bbox
@@ -65,7 +67,8 @@ def main():
             cv2.imwrite(save_path + save_image_name + ".jpg", img)
             with open(save_path + save_image_name + ".txt", "w") as f:
                 for i in rel_bbox_list:
-                    f.write(i + "/n")
+                    # f.write(i + "/n")
+                    f.write(i + "\n")
 
             image_count += 1
 
