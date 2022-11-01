@@ -7,6 +7,7 @@ from PIL import Image
 import random
 import cv2
 
+
 def bbox2points(bbox):
     """
     From bounding box yolo format
@@ -49,10 +50,10 @@ def class_colors(names):
 
 
 model = YoloDetector(target_size=720,gpu=0,min_face=90)
-orgimg = np.array(Image.open('test_image.jpg'))
+orgimg = np.array(Image.open('test_image2.jpg'))
 bboxes, points = model.predict(orgimg)
 print(bboxes, points)
-im = Image.open('test_image3.jpg')
+im = Image.open('test_image2.jpg')
 orgimg = np.array(im)
 bboxes,points = model.predict(orgimg)
 
