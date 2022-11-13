@@ -181,7 +181,7 @@ if __name__ == '__main__':
         under_threshold_index = list()
         if len(crop_imgs) is not 0:
             for i in range(num_labels):
-                cv2.imshow('label_image', crop_imgs[i])
+                cv2.imshow('label_image ', crop_imgs[i])
 
                 LAMP = modifiedLaplacian(crop_imgs[i])
                 LAPV = varianceOfLaplacian(crop_imgs[i])

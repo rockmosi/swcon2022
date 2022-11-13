@@ -20,12 +20,13 @@ create_folder(dir)
 vidcap = cv2.VideoCapture(movie_path)
 success, image = vidcap.read()
 count = 0
-
+print("success", success, movie_path)
 while success:
     # write_name = dir + "/" + file_name[:-4] + "_frame%d.jpg" % count
     # write_dir = dir + "/"
     write_name = dir + "/" + file_name[:-4] + "_frame%d.jpg" % count
     # write_name = "frame%d.jpg" % count
+    print("write_name=", write_name)
     cv2.imwrite(write_name, image)     # save frame as JPEG file
     success, image = vidcap.read()
     print(write_name, success)
