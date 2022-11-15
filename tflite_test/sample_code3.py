@@ -22,8 +22,8 @@ import importlib.util
 
 # Define and parse input arguments
 parser = argparse.ArgumentParser()
-parser.add_argument('--modeldir', help='Folder the .tflite file is located in',
-                    required=True)
+# parser.add_argument('--modeldir', help='Folder the .tflite file is located in',
+#                     required=True)
 parser.add_argument('--graph', help='Name of the .tflite file, if different than detect.tflite',
                     default='detect.tflite')
 parser.add_argument('--labels', help='Name of the labelmap file, if different than labelmap.txt',
@@ -37,10 +37,12 @@ parser.add_argument('--edgetpu', help='Use Coral Edge TPU Accelerator to speed u
 
 args = parser.parse_args()
 
-MODEL_NAME = args.modeldir
+# MODEL_NAME = args.modeldir
+
+MODEL_NAME = "best-int8.tflite"
 GRAPH_NAME = args.graph
-LABELMAP_NAME = args.labels
-VIDEO_NAME = args.video
+LABELMAP_NAME = "labelmap.txt"
+VIDEO_NAME = "20220531.mp4"
 min_conf_threshold = float(args.threshold)
 use_TPU = args.edgetpu
 # Keep track if we are using TPU
@@ -68,16 +70,19 @@ if use_TPU:
         GRAPH_NAME = 'edgetpu.tflite'
 
     # Get path to current working directory
-CWD_PATH = os.getcwd()
+# CWD_PATH = os.getcwd()
+CWD_PATH = "/media/rock/data_disk/data/mask_face/test_data/"
 
 # Path to video file
 VIDEO_PATH = os.path.join(CWD_PATH, VIDEO_NAME)
 
 # Path to .tflite file, which contains the model that is used for object detection
-PATH_TO_CKPT = os.path.join(CWD_PATH, MODEL_NAME, GRAPH_NAME)
+# PATH_TO_CKPT = os.path.join(CWD_PATH, MODEL_NAME, GRAPH_NAME)
+PATH_TO_CKPT = "/media/rock/data_disk/data/mask_face/02_train_model/221102_exp29/weights/best-int8.tflite"
 
 # Path to label map file
-PATH_TO_LABELS = os.path.join(CWD_PATH, MODEL_NAME, LABELMAP_NAME)
+# PATH_TO_LABELS = os.path.join(CWD_PATH, MODEL_NAME, LABELMAP_NAME)
+PATH_TO_LABELS = "labelmap.txt"
 
 # Load the label map
 with open(PATH_TO_LABELS, 'r') as f:
@@ -120,6 +125,7 @@ while (video.isOpened()):
 
     # Acquire frame and resize to expected shape [1xHxWx3]
     ret, frame = video.read()
+    cv2.imshow("test", frame)
     if not ret:
         print('Reached the end of the video!')
         break
