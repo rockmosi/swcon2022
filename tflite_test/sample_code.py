@@ -2,11 +2,13 @@ import numpy as np
 import tensorflow as tf
 import cv2
 import time
+import tflite_runtime.interpreter as tflite
 print(tf.__version__)
 
 Model_Path = "D:/data/mask_face/02_train_model/221102_exp29/weights/best-int8.tflite"
 Video_path = "D:/data/mask_face/test_data/20220531.mp4"
 
+# interpreter = tf.lite.Interpreter(model_path=Model_Path)
 interpreter = tf.lite.Interpreter(model_path=Model_Path)
 interpreter.allocate_tensors()
 
@@ -50,10 +52,10 @@ while True:
     interpreter.set_tensor(input_details[0]['index'], image_np_expanded)
     interpreter.invoke()
 
-    output_data = interpreter.get_tensor(output_details[0]['index'])
-    # output_data_1 = interpreter.get_tensor(output_details[1]['index'])
-    # output_data_2 = interpreter.get_tensor(output_details[2]['index'])
-    # output_data_3 = interpreter.get_tensor(output_details[3]['index'])
+    output_data = interpreter.get_tensor(output_details[0]['index'])  # Bounding box coordinates of detected objects
+    # output_data_1 = interpreter.get_tensor(output_details[1]['index'])  # Class index of detected objects
+    # output_data_2 = interpreter.get_tensor(output_details[2]['index'])  # Confidence of detected objects
+    # output_data_3 = interpreter.get_tensor(output_details[3]['index'])  # Total number of detected objects
     each_interpreter_time = time.time() - model_interpreter_start_time
 
     # for i in range(len(output_data_1[0])):
